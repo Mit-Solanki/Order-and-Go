@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order and Go - Login/Signup</title>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">    <link rel="stylesheet" href="css/styleslog.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-auth-compat.js"></script>    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+</head>
+<body>
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+        <p>Order and Go</p>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Order and Go</h1>
+            </div>
+            <div class="auth-nav">
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-main">
+        <div class="container">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="signup">Sign Up</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div class="auth-form active" id="login-form">
+                    <h2>Welcome Back</h2>
+                    <p class="auth-subtitle">Login to your account to continue</p>
+                    
+                    <form id="login-form-element">
+                        <div class="form-group">
+                            <label for="login-email">Email</label>
+                            <div class="input-with-icon">
+                                <input type="email" id="login-email" placeholder="Enter your email" required>
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span class="error-message" id="login-email-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="login-password" placeholder="Enter your password" required>
+                                <i class="fas fa-lock"></i>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="login-password-error"></span>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember-me">
+                                <label for="remember-me">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        
+                        <button type="submit" class="auth-button pulse">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                    </form>
+                    
+                    <div class="social-login">
+                        <p>Or login with</p>
+                        <div class="social-buttons">
+                            <button class="social-button google">
+                                <i class="fab fa-google"></i> Google
+                            </button>
+                            <button class="social-button facebook">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="auth-switch">
+                        <p>Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a></p>
+                    </div>
+                </div>
+                
+                <!-- Signup Form -->
+                <div class="auth-form" id="signup-form">
+                    <h2>Create Account</h2>
+                    <p class="auth-subtitle">Join us to start ordering delicious food</p>
+                    
+                    <form id="signup-form-element">
+                        <div class="form-group">
+                            <label for="signup-name">Full Name</label>
+                            <div class="input-with-icon">
+                                <input type="text" id="signup-name" placeholder="Enter your full name" required>
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <span class="error-message" id="signup-name-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-email">Email</label>
+                            <div class="input-with-icon">
+                                <input type="email" id="signup-email" placeholder="Enter your email" required>
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <span class="error-message" id="signup-email-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-phone">Phone Number</label>
+                            <div class="input-with-icon">
+                                <input type="tel" id="signup-phone" placeholder="Enter your phone number" required>
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <span class="error-message" id="signup-phone-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="signup-password" placeholder="Create a password" required>
+                                <i class="fas fa-lock"></i>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="signup-password-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-confirm-password">Confirm Password</label>
+                            <div class="input-with-icon">
+                                <input type="password" id="signup-confirm-password" placeholder="Confirm your password" required>
+                                <i class="fas fa-lock"></i>
+                                <button type="button" class="toggle-password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="signup-confirm-password-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-role">Join as</label>
+                            <div class="role-selection">
+                                <div class="role-option active" data-role="customer">
+                                    <i class="fas fa-user"></i>
+                                    <span>Customer</span>
+                                </div>
+                                <div class="role-option" data-role="staff">
+                                    <i class="fas fa-user-tie"></i>
+                                    <span>Staff</span>
+                                </div>
+                                <div class="role-option" data-role="admin">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span>Admin</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="signup-role" value="customer">
+                            <span class="error-message" id="signup-role-error"></span>
+                        </div>
+                        
+                        <div class="form-group" id="admin-code-group" style="display: none;">
+                            <label for="admin-code">Admin Code</label>
+                            <div class="input-with-icon">
+                                <input type="text" id="admin-code" placeholder="Enter admin verification code">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <span class="error-message" id="admin-code-error"></span>
+                        </div>
+                        
+                        <div class="form-group" id="staff-code-group" style="display: none;">
+                            <label for="staff-code">Staff Code</label>
+                            <div class="input-with-icon">
+                                <input type="text" id="staff-code" placeholder="Enter staff verification code">
+                                <i class="fas fa-key"></i>
+                            </div>
+                            <span class="error-message" id="staff-code-error"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-address">Address (Optional)</label>
+                            <div class="input-with-icon">
+                                <textarea id="signup-address" placeholder="Enter your address"></textarea>
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="terms" required>
+                                <label for="terms">I agree to the <a href="#" class="forgot-password">Terms & Conditions</a></label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="auth-button">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="auth-switch">
+                        <p>Already have an account? <a href="#" id="switch-to-login">Login</a></p>
+                    </div>
+                </div>
+                </div> <div class="auth-image">
+                <div class="auth-image-content">
+                    <h2 >Delicious Food waitiong for your arrival</h2>
+                    <p>Join thousands of satisfied customers who enjoy our delicious meals at our shop.</p>
+                    <div class="auth-features">
+                        <div class="auth-feature">
+                            <i class="fas fa-utensils"></i>
+                            <span>Wide variety of cuisines</span>
+                        </div>
+                        <div class="auth-feature">
+                            <i class="fas fa-truck"></i>
+                            <span>Quick pickup</span>
+                        </div>
+                        <div class="auth-feature">
+                            <i class="fas fa-star"></i>
+                            <span>Top-rated restaurants</span>
+                        </div>
+                        <div class="auth-feature">
+                            <i class="fas fa-tag"></i>
+                            <span>Exclusive deals & discounts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+           
+        </div>
+    </main>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="success-title">Account Created Successfully!</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <i class="fas fa-check-circle success-icon"></i>
+                <p id="success-message">Your account has been created successfully.</p>
+                <p>You can now login to access your account.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="success-action" class="primary-btn">Continue to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Order and Go</h3>
+                    <p>Delicious food waiting for your arrival</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="#">Menu</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Food Street, Foodville</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@orderandgo.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Order and Go. All rights reserved.</p>
+            </div>
+        </div>    </footer>
+
+    <script src="js/scriptlog.js"></script>
+    <script type="module">
+        // Initialize Firebase Auth
+        const auth = window.auth;
+        const db = window.db;
+        
+        // Update the authenticateUser function
+        window.authenticateUser = async function(userData) {
+            try {
+                if (auth.currentUser) {
+                    const token = await auth.currentUser.getIdToken(true);
+                    sessionStorage.setItem('authToken', token);
+                }
+                
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                
+                const redirectUrl = userData.role === 'admin' ? 'admin3.html' : 
+                                  userData.role === 'staff' ? 'staff2.html' : 
+                                  'index.html';
+                
+                window.showSuccessModal(
+                    'Success!',
+                    `Welcome ${userData.name}!`,
+                    'Continue',
+                    () => {
+                        window.location.href = redirectUrl;
+                    }
+                );
+            } catch (error) {
+                console.error('Error in authentication:', error);
+                window.showError('login-email', 'An error occurred during authentication. Please try again.');
+            }
+        };
+        
+        // Setup auth state listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                console.log('User is signed in:', user.email);
+            } else {
+                // User is signed out
+                console.log('User is signed out');
+                localStorage.removeItem('currentUser');
+                sessionStorage.removeItem('authToken');
+            }
+        });
+    </script>
+</body>
+</html>

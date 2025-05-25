@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order and Go - Admin Order Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/stylesadmin3.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="js/firebase-init.js"></script>
+</head>
+<body>
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+        <p>Order and Go</p>
+    </div>
+
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-utensils"></i>
+                    <h1>Order and Go</h1>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="nav-item">
+                        <a href="#menu-section" data-section="menu-section">
+                            <i class="fas fa-utensils"></i>
+                            <span>Menu</span>
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a href="#orders-section" data-section="orders-section">
+                            <i class="fas fa-clipboard-list"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button id="logout-btn" class="logout-btn-header">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+                <div class="header-middle">
+                    <h2>Order Management</h2>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search orders..." id="search-input">
+                        <button id="search-btn">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <button id="refresh-btn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Menu Section -->
+            <section id="menu-section" class="content-section">
+                <div class="menu-header">
+                    <h2>Menu Management</h2>
+                    <button id="add-item-btn" class="primary-btn">
+                        <i class="fas fa-plus"></i> Add New Item
+                    </button>
+                </div>
+                <div class="menu-categories">
+                    <select id="category-filter" class="category-select">
+                        <option value="all">All Categories</option>
+                        <option value="drinks">Drinks</option>
+                        <option value="crisps">Crisps</option>
+                        <option value="dessert">Dessert</option>
+                        <option value="food">Food</option>
+                    </select>
+                </div>
+                <div class="menu-list" id="menu-list">
+                    <!-- Menu items will be populated here -->
+                </div>
+            </section>
+
+            <!-- Orders Section -->
+            <section id="orders-section" class="content-section active">
+                <div class="orders-header">
+                    <div class="orders-filters">
+                        <select id="status-filter" class="status-select">
+                            <option value="all">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="ready">Ready</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select id="time-filter" class="time-select">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="orders-list" id="orders-list">
+                    <!-- Orders will be populated here -->
+                </div>
+            </section>
+
+            <!-- Add/Edit Menu Item Modal -->
+            <div class="modal" id="menu-modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="menu-modal-title">Add Menu Item</h3>
+                        <button class="close-modal" id="close-menu-modal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="menu-form">
+                            <div class="form-group">
+                                <label for="item-name">Item Name</label>
+                                <input type="text" id="item-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-description">Description</label>
+                                <textarea id="item-description" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-price">Price (₹)</label>
+                                <input type="number" id="item-price" min="0" step="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-category">Category</label>
+                                <select id="item-category" required>
+                                    <option value="drinks">Drinks</option>
+                                    <option value="crisps">Crisps</option>
+                                    <option value="dessert">Dessert</option>
+                                    <option value="food">Food</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="item-image">Image URL</label>
+                                <input type="url" id="item-image">
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="primary-btn">Save Item</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Details</h3>
+                <button class="close-modal" id="close-order-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="order-details">
+                    <!-- Order details will be populated here -->
+                </div>
+                <div class="form-actions">
+                    <button id="update-status-btn" class="primary-btn">Update Status</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="js/scriptadmin3.js"></script>
+</body>
+</html>

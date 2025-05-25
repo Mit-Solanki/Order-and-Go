@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order and Go - Food Pickup</title>    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/stylesind.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.7.3/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-init.js"></script>
+</head>
+<body>
+    <div class="loader-container" id="loader">
+        <div class="loader"></div>
+        <p>Order and Go</p>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-utensils"></i>
+                <h1>Order and Go</h1>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search for food...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-actions">
+                <div class="cart" id="cart-btn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart</span>
+                    <span class="cart-count" id="cart-count">0</span>
+                </div>
+                <div class="user" id="login-btn">
+    <i class="fas fa-user"></i>
+    <span>Login / Register</span>
+</div>
+
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero">
+            <div class="container">
+                <h2>Welcome to Order and Go</h2>
+                
+                <div class="hero-cta">
+                    <button class="primary-btn" id="explore-menu-btn">
+                        <i class="fas fa-utensils"></i> Explore Menu
+                    </button>
+                    <button class="secondary-btn" id="special-offers-btn">
+                        <i class="fas fa-gift"></i> Special Offers
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">            <div class="categories">
+                <button class="category-btn active" data-category="all">All</button>
+                <button class="category-btn" data-category="drinks">
+                    <i class="fas fa-coffee"></i> Drinks
+                </button>
+                <button class="category-btn" data-category="crisps">
+                    <i class="fas fa-cookie"></i> Crisps
+                </button>
+                <button class="category-btn" data-category="food">
+                    <i class="fas fa-hamburger"></i> Food
+                </button>
+                <button class="category-btn" data-category="dessert">
+                    <i class="fas fa-ice-cream"></i> Dessert
+                </button>
+            </div>
+
+            <div class="search-results" id="search-results">
+                <p>Showing results for: <span id="search-query"></span></p>
+                <button id="clear-search"><i class="fas fa-times"></i> Clear</button>
+            </div>
+
+            <div class="menu-items" id="menu-items">
+                <!-- Menu items will be dynamically added here -->
+            </div>
+        </div>
+
+        
+    </main>
+
+    <!-- Cart Modal -->
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-content">
+            <div class="cart-header">
+                <h3>Your Cart</h3>
+                <button id="close-cart"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="cart-items" id="cart-items">
+                <!-- Cart items will be added here -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total">₹0</span>
+                </div>
+                <button id="checkout-btn" class="checkout-btn">Checkout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Confirmation Modal -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Order Confirmed!</h3>
+                <button class="close-modal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <i class="fas fa-check-circle success-icon"></i>                <p>Your order has been placed successfully!</p>
+                <p>Your order will be ready for pickup in 20-30 minutes.</p>
+                <p>Please show your order confirmation at the counter.</p>
+                <div class="order-details" id="order-details">
+                    <!-- Order details will be added here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="continue-shopping" class="primary-btn">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Required Modal -->
+    <div class="modal" id="login-required-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login Required</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="login-required-message">
+                    <i class="fas fa-user-lock"></i>
+                    <p>Please login or register to add items to your cart.</p>
+                    <div class="login-required-actions">
+                        <button class="btn secondary-btn" id="go-to-login-btn">Login</button>
+                        <button class="btn primary-btn" id="go-to-register-btn">Register</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Order and Go</h3>
+                    <p>Delicious food waiting for your arrival</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Menu</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Food Street, Foodville</p>
+                    <p><i class="fas fa-phone"></i> +91 1234567890</p>
+                    <p><i class="fas fa-envelope"></i> info@orderandgo.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Order and Go. All rights reserved.</p>            </div>
+        </div>    </footer>
+    <!-- Initialize Firestore data (only needed first time) -->
+    <script src="js/initializeFirestore.js"></script>
+    <!-- Main application script -->
+    <script src="js/scriptind.js"></script>
+</body>
+</html>
